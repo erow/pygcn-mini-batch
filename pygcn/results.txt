@@ -1,0 +1,8 @@
+{'no_cuda': False, 'fastmode': False, 'seed': 42, 'epochs': 200, 'num_samples': 50, 'lr': 0.01, 'weight_decay': 0.0005, 'hidden': 16, 'dropout': 0.5, 'cuda': True, 'loss': 1.8838980197906494, 'acc': 0.558}
+{'no_cuda': False, 'fastmode': False, 'seed': 42, 'epochs': 200, 'num_samples': 100, 'lr': 0.01, 'weight_decay': 0.0005, 'hidden': 16, 'dropout': 0.5, 'cuda': True, 'loss': 1.7428494691848755, 'acc': 0.874}
+{'no_cuda': False, 'fastmode': False, 'seed': 42, 'epochs': 200, 'num_samples': 200, 'lr': 0.01, 'weight_decay': 0.0005, 'hidden': 16, 'dropout': 0.5, 'cuda': True, 'loss': 1.5396733283996582, 'acc': 0.897}
+{'no_cuda': False, 'fastmode': False, 'seed': 42, 'epochs': 200, 'num_samples': 500, 'lr': 0.01, 'weight_decay': 0.0005, 'hidden': 16, 'dropout': 0.5, 'cuda': True, 'loss': 1.0951462984085083, 'acc': 0.919}
+{'no_cuda': False, 'fastmode': False, 'seed': 42, 'epochs': 200, 'num_samples': 1000, 'lr': 0.01, 'weight_decay': 0.0005, 'hidden': 16, 'dropout': 0.5, 'cuda': True, 'loss': 0.7300158143043518, 'acc': 0.932}
+{'no_cuda': False, 'fastmode': False, 'seed': 42, 'epochs': 200, 'num_samples': 1500, 'lr': 0.01, 'weight_decay': 0.0005, 'hidden': 16, 'dropout': 0.5, 'cuda': True, 'loss': 0.751504123210907, 'acc': 0.914}
+{'no_cuda': False, 'fastmode': False, 'seed': 42, 'epochs': 200, 'num_samples': 2000, 'lr': 0.01, 'weight_decay': 0.0005, 'hidden': 16, 'dropout': 0.5, 'cuda': True, 'loss': 0.5607536435127258, 'acc': 0.915}
+{'no_cuda': False, 'fastmode': False, 'seed': 42, 'epochs': 200, 'num_samples': 2708, 'lr': 0.01, 'weight_decay': 0.0005, 'hidden': 16, 'dropout': 0.5, 'cuda': True, 'loss': 0.4899459779262543, 'acc': 0.901}
