@@ -1,46 +1,92 @@
-Graph Convolutional Networks in PyTorch
-====
+# A test for an application
+Copy from  https://github.com/tkipf/pygcn
 
-PyTorch implementation of Graph Convolutional Networks (GCNs) for semi-supervised classification [1].
 
-For a high-level introduction to GCNs, see:
+# Answers
+---
+## Q1.2
 
-Thomas Kipf, [Graph Convolutional Networks](http://tkipf.github.io/graph-convolutional-networks/) (2016)
+According to Lipschitz continuous gradient, we have
+$$
+\begin{array}{l}
+\mathbb{E}\left[f\left(\mathbf{x}_{t+1}\right)\right] \leq \mathbb{E}\left[f\left(\mathbf{x}_{t}\right)\right]+\mathbb{E}\left[\left\langle\nabla f\left(\mathbf{x}_{t}\right), \mathbf{x}_{t+1}-\mathbf{x}_{t}\right\rangle\right]+\frac{L}{2} \mathbb{E}\left[\left\|\mathbf{x}_{t+1}-\mathbf{x}_{t}\right\|^{2}\right] \\
+=\mathbb{E}\left[f\left(\mathbf{x}_{t}\right)\right]-\eta \mathbb{E}\left[\left\langle\nabla f\left(\mathbf{x}_{t}\right), \mathbf{v}_{t}\right\rangle\right]+\frac{\eta^{2} L}{2} \mathbb{E}\left[\left\|\mathbf{v}_{t}\right\|^{2}\right] \\
+\end{array}
+$$
+Summing up over $t$ from 0 to $T − 1$, we have:
+$$
+\begin{equation}
+\mathbb{E}\left[f\left(\mathbf{x}_{{T}}\right)\right] \leq  f(x_0) - \eta \sum_{t=0}^{T}  \mathbb{E}\left[\left\langle\nabla f\left(\mathbf{x}_{t}\right), \mathbf{v}_{t}\right\rangle\right] + 
+\frac{\eta^{2} L}{2} \sum_{t=0}^{T}  \mathbb{E}\left[\left\|\mathbf{v}_{t}\right\|^{2}\right]
+\end{equation}
+$$
 
-![Graph Convolutional Networks](figure.png)
+Eq. (12) can be expaned as:
+$$
+\begin{split}
+  \sum_{t=0}^{T}  \mathbb{E}\left[\left\|\mathbf{v}_{t}\right\|^{2}\right] + 
+  2 \sum_{t=0}^{T}  \mathbb{E}\left[\left\langle \nabla f\left(\mathbf{x}_{t}\right), \mathbf{v}_{t}\right\rangle\right] + 
+  \sum_{t=0}^{T}  \mathbb{E}\left[\left\| \nabla f\left(\mathbf{x}_{t}\right) \right\|^{2}\right] \\
+  \le 
+  \eta^2 L^2 \sum_{t=0}^{T}  \mathbb{E}\left[\left\|\mathbf{v}_{t}\right\|^{2}\right].
+\end{split}
+$$
 
-Note: There are subtle differences between the TensorFlow implementation in https://github.com/tkipf/gcn and this PyTorch re-implementation. This re-implementation serves as a proof of concept and is not intended for reproduction of the results reported in [1].
+In addition, we have the following inequality according to Cauchy–Schwarz inequality:
+$$
+2 \sum_{t=0}^{T}  \mathbb{E}\left[\left\langle \nabla f\left(\mathbf{x}_{t}\right), \mathbf{v}_{t}\right\rangle\right] \le \sum_{t=0}^{T}  \mathbb{E}\left[\left\|\mathbf{v}_{t}\right\|^{2}\right] + \sum_{t=0}^{T}  \mathbb{E}\left[\left\| \nabla f\left(\mathbf{x}_{t}\right) \right\|^{2}\right]
+$$
 
-This implementation makes use of the Cora dataset from [2].
+To simplify the calculations, we set:
+$$
+\begin{array}{l}
+X = \sum_{t=0}^{T}  \mathbb{E}\left[\left\langle\nabla f\left(\mathbf{x}_{t}\right), \mathbf{v}_{t}\right\rangle\right],\\
+D = \sum_{t=0}^{T}  \mathbb{E}\left[ \left\| \nabla f(\mathbf{x}_{t})  \right\|^2\right],\\
+V = \sum_{t=0}^{T}  \mathbb{E}\left[ \left\|  \mathbf{v}_{t} \right\|^2\right],\\
+C = \mathbb{E}\left[f\left(\mathbf{x}_{{T}}\right)\right] -  f(x_0).
+\end{array}
+$$
 
-## Installation
+Then, we have
+$$
+\begin{split}
+  C \le -\eta X + \frac{\eta^2L}{2} V, &   \rule{5.6em}{0em}①\\
+  V + D - 2 X \le \eta^2 L^2 V, &\rule{5.6em}{0em}②\\
+  2 X \le V + D.  &\rule{5.6em}{0em}③\\
+\end{split}
+$$
+We are going to find a shuitable $\eta$ to 
+$$
+ \frac{1}{T} D \le O(\frac{1}{T}).
+$$
 
-```python setup.py install```
+To solve it, substitute equations ①,③ into ② and eliminate $V$ and $X$. We therefore use $a$,$b$ to scale equations ①,③ and substitute them into ②. $V$ can be eliminated by solving the equation.
+$$
+a+b=2,\\
+a \frac{\text{$\eta $L}}{2}+b \frac{1}{2}=1-\eta. ^2 L^2
+$$
+Then, we get the solutions：
+$$
+a\to -\frac{2 \eta ^2 L^2}{\text{$\eta $L}-1},b\to \frac{2 \left(\text{$\eta $L}+\eta ^2 L^2-1\right)}{\text{$\eta $L}-1}
+$$
+Finally, we have:
+$$
+D \le \frac{-2 C}{\eta }
+$$
 
-## Requirements
+Therefore, it turns to be
+$$
+\frac{1}{T} \sum_{t=0}^{T}  \mathbb{E}\left[ \left\| \nabla f(\mathbf{x}_{t})  \right\|^2\right] \le 2\frac{f(x_0) - f(x_T)}{T \eta} \le  O(\frac{1}{T}),
+$$
+for any constant $\eta$.
 
-  * PyTorch 0.4 or 0.5
-  * Python 2.7 or 3.6
 
-## Usage
+# Q2
 
-```python train.py```
+The code and result are in the [notebook](https://github.com/erow/pygcn-mini-batch/blob/master/pygcn/exp.ipynb).
 
-## References
+# Q3
 
-[1] [Kipf & Welling, Semi-Supervised Classification with Graph Convolutional Networks, 2016](https://arxiv.org/abs/1609.02907)
-
-[2] [Sen et al., Collective Classification in Network Data, AI Magazine 2008](http://linqs.cs.umd.edu/projects/projects/lbc/)
-
-## Cite
-
-Please cite our paper if you use this code in your own work:
-
-```
-@article{kipf2016semi,
-  title={Semi-Supervised Classification with Graph Convolutional Networks},
-  author={Kipf, Thomas N and Welling, Max},
-  journal={arXiv preprint arXiv:1609.02907},
-  year={2016}
-}
-```
+It is implemented in [code](question3.py).
+The macro f1-score for the demo is 0.48.
+The micro f1-score for the demo is 0.46513720197930725.
